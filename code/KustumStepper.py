@@ -81,7 +81,7 @@ GPIO.setup(YLimitSwitch, GPIO.IN)
 
 def Step(axis, dir):
     if axis==0:
-        if dir>0:
+        if dir<0:
             GPIO.output(XMotor1,1)
             GPIO.output(XMotor3,0)
             GPIO.output(XMotor3,0)
@@ -125,7 +125,7 @@ def Step(axis, dir):
             time.sleep(Delay)
     
     elif axis==1:
-        if dir>0:
+        if dir<0:
             GPIO.output(YMotor1,1)
             GPIO.output(YMotor3,0)
             GPIO.output(YMotor2,0)
@@ -176,15 +176,16 @@ def Travel(XDistance, YDistance):
     print 'XSteps ', XSteps
     print 'YSteps ', YSteps
     i = 0
+    print 'Step X'
     while i<XSteps:
         Step(0, XDir)
-        i=i+1
-        print 'Step X'
+        i=i+1        
     i = 0
+    print 'Step Y'
     while i<YSteps:
         Step(1, YDir)
         i=i+1
-        print 'Step Y'
+
         
 def MoveTo(XPrime,YPrime):
     global X
@@ -193,9 +194,9 @@ def MoveTo(XPrime,YPrime):
     X=XPrime
     Y=YPrime
 while True:
-    MoveTo(0.05,0)
-    MoveTo(0,0)
-    MoveTo(0,0.05)
+#    MoveTo(0.1,0)
+#    MoveTo(0,0)
+    MoveTo(0,0.1)
     MoveTo(0,0)
         
 GPIO.cleanup()
