@@ -84,7 +84,7 @@ def Step(axis, dir):
         if dir<0:
             GPIO.output(XMotor1,1)
             GPIO.output(XMotor3,0)
-            GPIO.output(XMotor3,0)
+            GPIO.output(XMotor2,0)
             GPIO.output(XMotor4,0)
             time.sleep(Delay)
             GPIO.output(XMotor1,0)
@@ -168,36 +168,60 @@ def Step(axis, dir):
             GPIO.output(YMotor4,0)
             time.sleep(Delay)
 
-def Travel(XDistance, YDistance):
+def Travel(Xprime, Yprime):
+    global X
+    global Y
+    X0=X
+    Y0=Y
+    XDistance=XPrime-X
+    YDistance=YPrime-Y
     XSteps = np.round(abs(XDistance)/XDelta)
     YSteps = np.round(abs(YDistance)/YDelta)
     XDir = np.sign(XDistance)
     YDir = np.sign(YDistance)
+    
     print 'XSteps ', XSteps
     print 'YSteps ', YSteps
-    i = 0
-    print 'Step X'
-    while i<XSteps:
-        Step(0, XDir)
-        i=i+1        
-    i = 0
-    print 'Step Y'
-    while i<YSteps:
-        Step(1, YDir)
-        i=i+1
-
-        
-def MoveTo(XPrime,YPrime):
-    global X
-    global Y
-    Travel(XPrime-X, YPrime-Y)
-    X=XPrime
-    Y=YPrime
-while True:
-#    MoveTo(0.1,0)
-#    MoveTo(0,0)
-    MoveTo(0,0.1)
-    MoveTo(0,0)
+    if XSteps = 0:
+        i = 0
+        print 'Step Y'
+        while i<YSteps:
+            Step(1, YDir)
+            i=i+1
+            Y=Y+YStep*YDir
+    elif YSteps = 0:
+        print 'Step X'        
+        i = 0
+        while i<XSteps:
+            Step(0, XDir)
+            i=i+1
+            X=X+XStep*XDir        
+    else:
+        Slope = YDistance/YDistance
+        if abs(Slope)<=0.5:
+            i=0
+            while i<XSteps:
+                Step(0, XDir)
+                i=i+1
+                X=X+XStep*XDir                
+                Yi = Y
+                Yi1 = Y+YStep*Ydir
+                if abs((Yi1-Y0)-Slope*(X-X0))<abs((Yi-Y0)-Slope*(X-X0)):
+                    Y=Yi1
+                else:
+                    Y=Yi
+        else:
+            i=0
+            while i<YSteps:
+                Step(1, YDir)
+                i=i+1
+                Y=Y+YStep*YDir                
+                Xi = X
+                Xi1 = X+XStep*Xdir
+                if abs((Xi1-X0)-1/Slope*(Y-Y0))<abs((Xi-X0)-1/Slope*(Y-Y0)):
+                    X=Xi1
+                else:
+                    X=Xi
         
 GPIO.cleanup()
 quit()
