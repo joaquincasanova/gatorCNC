@@ -222,6 +222,22 @@ def Travel(Xprime, Yprime):
                     X=Xi1
                 else:
                     X=Xi
+
+def Spindle(DurationSpindle):
+    GPIO.output(SpindleRelay,1)
+    time.sleep(DurationSpindle)
+    GPIO.output(SpindleRelay,0)
+
+def ZSolenoid(DurationZ,DurationSpindle):
+    GPIO.output(ZRelay,1)
+    time.sleep((DurationZ-DurationSpindle)/2)
+    Spindle(DurationSpindle)
+    time.sleep((DurationZ-DurationSpindle)/2)
+    GPIO.output(ZRelay,0)
+
+Travel(.1,.1)
+ZSolenoid(1,.5):
+Travel(0,0)
         
 GPIO.cleanup()
 quit()
